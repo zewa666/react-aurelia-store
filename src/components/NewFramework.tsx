@@ -1,23 +1,22 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { useStore } from "../store/state";
 import { addFramework } from '../store/actions';
 
-export const NewFramework: React.FC = () => {
+export function NewFramework() {
   const [, store] = useStore();
-  const [framework, setFramework] = useState("");
+  const valueRef = useRef<HTMLInputElement>();
 
   const addNewFramework = () => {
-    store.dispatch(addFramework, framework);
-    setFramework("");
+    store.dispatch(addFramework, valueRef.current!.value);
+    valueRef.current!.value = "";
   }
 
-  return <div>
+  return (<div>
     <label>New framework:</label>
     <br />
     <input type="text"
       placeholder="enter the new framework"
-      defaultValue={framework}
-      onBlur={(e) => setFramework(e.target.value)} />
+      ref={valueRef as any} />
     <button onClick={addNewFramework}>Add</button>
-  </div>;
+  </div>);
 }

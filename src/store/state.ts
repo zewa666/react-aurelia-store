@@ -16,9 +16,9 @@ export const useStore = (): [State, Store<State>] => {
   const [state, setState] = useState(initialState);
 
   useEffect(() => {
-    const subscription = store.state.subscribe((state) => { console.log(state); setState(state) });
+    const subscription = store.state.subscribe((state) => setState(state));
 
-    return () => { subscription.unsubscribe(); };
+    return () => subscription.unsubscribe();
   });
 
   return [
