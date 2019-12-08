@@ -1,3 +1,4 @@
+import { Observable } from "rxjs";
 import { Store } from "aurelia-store";
 import { useEffect, useState } from "react";
 
@@ -12,11 +13,16 @@ export const initialState = {
 
 export const store = new Store<State>(initialState, {});
 
-export const useStore = (): [State, Store<State>] => {
-  const [state, setState] = useState(initialState);
+export const useStore = <T = State>(options?: {
+    selector: (state: Observable<State>) => Observable<T>,
+    initial: T
+  }): [T | State, Store<State>] => {
+  const [state, setState] = useState<T | State>(options ? options.initial : initialState);
 
   useEffect(() => {
-    const subscription = store.state.subscribe((state) => setState(state));
+    const subscription = options
+      ? options.selector(store.state).subscribe((value: T) =>setState(value))
+      : store.state.subscribe((state) => setState(state));
 
     return () => subscription.unsubscribe();
   });
